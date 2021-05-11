@@ -1,0 +1,7 @@
+requests
+pysocks
+prettytable
+exp10it
+Crypto
+click
+pycryptodome
