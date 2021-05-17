@@ -5,3 +5,4 @@ exp10it
 Crypto
 click
 pycryptodome
+jinja2
