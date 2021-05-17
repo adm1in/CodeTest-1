@@ -11,7 +11,7 @@ urllib3.disable_warnings()
 pages = 5
 ##修改为自己登录后的cookie值
 _fofapro_ars_session = """
-    eyJhbGciOiJIUzUxMiIsImtpZCI6Ik5XWTVZakF4TVRkalltSTJNRFZsWXpRM05EWXdaakF3TURVMlkyWTNZemd3TUdRd1pUTmpZUT09IiwidHlwIjoiSldUIn0.eyJpZCI6MzU5NjYsIm1pZCI6MTAwMDI2MDc2LCJ1c2VybmFtZSI6InhreDUxOCIsImV4cCI6MTYxODA3NDk4MH0.W3Va5k3Y8yTBNwsoVTt7J7MuSqmjOWBBIpg0QkIa44mqRszVdvgNYzJpKA_NofbjD1UqDimtqYbYpIHmK9PCQg
+    b0a0483a431f906bab92e5e1f2d191c4
 """
 
 print('''FOFA常用语法:
@@ -52,13 +52,10 @@ def load_url(url, index):
     tree = etree.HTML(rep_test)
     for i in range(1,11):
         try:
-            http = tree.xpath('//*[@id="__layout"]/div[{}]/div[1]/div[1]/a/text()'.format(i))[0].strip()
-
-            #http = tree.xpath('//a[@target="_blank"]/text()'.format(i))[0].strip()
+            http = tree.xpath('//*[@id="ajax_content"]/div[{}]/div[1]/div[1]/a/text()'.format(i))[0].strip()
             if http == '':
-                http = tree.xpath('//*[@id="__layout"]/div[{}]/div[1]/div[1]/a[2]/text()'.format(i))[0].strip()
+                http = tree.xpath('//*[@id="ajax_content"]/div[{}]/div[1]/div[1]/a[2]/text()'.format(i))[0].strip()
         except IndexError:#没有捕获到数据时,跳过
-            print('[-]捕获键值出错')
             break
         threadLock.acquire()
         url_list.append(http)
@@ -84,11 +81,6 @@ def check(**kwargs):
 #测试
 if __name__ == "__main__":
     url = "title=\"beijing\""
-    load_url(url,5)
-    for url in url_list:
-        print(url)
-
-
 
 
 
