@@ -64,35 +64,21 @@ C:\Windows\System32\drivers\etc\hosts
 ```
 def check(**kwargs):
 	url = kwargs['url']#/*str*/
-	port = kwargs['port']#/*str*/
 	print('输出结果')
 	print(url)
-	print(port)
+	'''此处的返回状态码用与批量验证
 	if True:
 		return 1
 	else:
 		return
+	'''
 ```
 
 
 #### EXP
 
 ```
-import CodeTest
-from ClassCongregation import _urlparse
-#VULN = None => 漏洞测试
-#VULN = True => 命令执行
-CodeTest.VULN = None
-
-def check(**kwargs):
-    if CodeTest.VULN == None:
-        ExpApacheShiro = ApacheShiro(_urlparse(kwargs['url']),"echo VuLnEcHoPoCSuCCeSS")
-    else:
-        ExpApacheShiro = ApacheShiro(_urlparse(kwargs['url']),kwargs['cmd'])
-    if kwargs['pocname'] == "cve_2016_4437":
-        ExpApacheShiro.cve_2016_4437()
-    else:
-        ExpApacheShiro.cve_2016_4437()
+有专用的EXP生成界面
 ```
 
 
