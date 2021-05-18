@@ -1,16 +1,15 @@
-from ClassCongregation import _urlparse
+from ClassCongregation import _urlparse,PocType_,verify,Dnslog
 from requests_toolbelt.utils import dump
 from operator import methodcaller
-from ClassCongregation import Dnslog
 import prettytable as pt
 import requests,re
-import CodeTest
 ################
 ##--Exchange--##
 #Exchange_SSRF  [ssrf]，默认VULN = None
 ################
-VULN = ''
-TIMEOUT = ''
+CMD = verify.CMD
+VULN = verify.VULN
+TIMEOUT = verify.TIMEOUT
 DL = Dnslog() #申请dnslog地址
 class Exchange():
     def __init__(self, url, CMD):
@@ -33,18 +32,18 @@ class Exchange():
                 self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
                 if DL.result():
                     self.r = "PoCSuCCeSS"
-                    CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+                    verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
                 else:
-                    CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+                    verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
             else:
                 self.request = requests.get(self.url + self.path, data=self.data, headers=self.headers, timeout=TIMEOUT, verify=False)
-                CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+                verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 
 tb = pt.PrettyTable()
 tb.field_names = ["Target type", "Vuln Name", "Poc", "Exp", "Impact Version && Vulnerability description"]
@@ -56,15 +55,7 @@ tb.add_row(print_result)
 print(tb)
 
 def check(**kwargs):
-    global VULN,TIMEOUT
-    VULN = kwargs['vuln']
-    TIMEOUT = int(kwargs['timeout'])
-    CodeTest.Verification.CMD = kwargs['cmd']
-    CodeTest.Verification.VULN = kwargs['vuln']
-    if VULN == 'False':
-        ExpExchange = Exchange(_urlparse(kwargs['url']),DL.dns_host())
-    else:
-        ExpExchange = Exchange(_urlparse(kwargs['url']),kwargs['cmd'])
+    ExpExchange = Exchange(_urlparse(kwargs['url']), CMD)
     if kwargs['pocname'] != "ALL":
         func = getattr(ExpExchange, kwargs['pocname'])#返回对象函数属性值，可以直接调用
         func()#调用函数

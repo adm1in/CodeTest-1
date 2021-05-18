@@ -1,8 +1,7 @@
 import sys,importlib,glob,os
 sys.path.append('../')
 #from concurrent.futures import ThreadPoolExecutor,wait,as_completed,ALL_COMPLETED
-from ClassCongregation import _urlparse
-from CodeTest import color,now
+from ClassCongregation import _urlparse,color,now
 
 vuln_scripts = []
 exp_scripts = []

