@@ -78,12 +78,12 @@ class MyGUI:
 
         #创建按钮
         self.frmTOPButton1 = Button(self.frmTOP, text='漏洞扫描', width = 10, command=POC)
-        self.frmTOPButton2 = Button(self.frmTOP, text='漏洞利用', width = 10, command=EXP)
-        self.frmTOPButton3 = Button(self.frmTOP, text='漏洞测试', width = 10, command=Check)
+        #self.frmTOPButton2 = Button(self.frmTOP, text='漏洞利用', width = 10, command=EXP)
+        #self.frmTOPButton3 = Button(self.frmTOP, text='漏洞测试', width = 10, command=Check)
         #self.frmTOPButton4 = Button(self.frmTOP, text='漏洞笔记', width = 10, command=shownote)
         self.frmTOPButton1.grid(row=0,column=0,padx=1, pady=1)
-        self.frmTOPButton2.grid(row=0,column=2,padx=1, pady=1)
-        self.frmTOPButton3.grid(row=0,column=3,padx=1, pady=1)
+        #self.frmTOPButton2.grid(row=0,column=2,padx=1, pady=1)
+        #self.frmTOPButton3.grid(row=0,column=3,padx=1, pady=1)
         #self.frmTOPButton4.grid(row=0,column=4,padx=1, pady=1)
         
         self.frmTOP.grid_propagate(0)
