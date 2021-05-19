@@ -124,6 +124,10 @@ print("""
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+""")
 
 def check(**kwargs):
+    global CMD,VULN,TIMEOUT
+    CMD = verify.CMD
+    VULN = verify.VULN
+    TIMEOUT = verify.TIMEOUT
     ExpApacheActiveMQ = ApacheActiveMQ(_urlparse(kwargs['url']),CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(ExpApacheActiveMQ, kwargs['pocname'])#返回对象函数属性值，可以直接调用

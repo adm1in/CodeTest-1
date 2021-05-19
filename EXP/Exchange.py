@@ -55,6 +55,10 @@ tb.add_row(print_result)
 print(tb)
 
 def check(**kwargs):
+    global CMD,VULN,TIMEOUT
+    CMD = verify.CMD
+    VULN = verify.VULN
+    TIMEOUT = verify.TIMEOUT
     ExpExchange = Exchange(_urlparse(kwargs['url']), CMD)
     if kwargs['pocname'] != "ALL":
         func = getattr(ExpExchange, kwargs['pocname'])#返回对象函数属性值，可以直接调用

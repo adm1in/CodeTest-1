@@ -598,6 +598,10 @@ print("""eg: http://119.3.36.68:9001/
 | Apache Struts2    | s2_devMode       |  Y  |  Y  | 2.1.0 - 2.5.1, devmode remote code execution                |
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+""")
 def check(**kwargs):
+    global CMD,VULN,TIMEOUT
+    CMD = verify.CMD
+    VULN = verify.VULN
+    TIMEOUT = verify.TIMEOUT
     ExpApacheStruts2 = ApacheStruts2(kwargs['url'],CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(ExpApacheStruts2, kwargs['pocname'])#返回对象函数属性值，可以直接调用

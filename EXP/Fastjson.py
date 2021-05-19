@@ -110,6 +110,10 @@ print("""
 | Fastjson          | cve_2017_18349   |  Y  |  N  | < 1.2.24 or < 1.2.47, deserialization remote code execution |
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+""")
 def check(**kwargs):
+    global CMD,VULN,TIMEOUT
+    CMD = verify.CMD
+    VULN = verify.VULN
+    TIMEOUT = verify.TIMEOUT
     ExpFastjson = Fastjson(kwargs['url'], CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(ExpFastjson, kwargs['pocname'])#返回对象函数属性值，可以直接调用

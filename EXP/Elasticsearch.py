@@ -99,6 +99,10 @@ print("""eg: http://106.53.249.95:8983
 | Elasticsearch     | cve_2015_1427    |  Y  |  Y  | 1.4.0 < 1.4.3, elasticsearch remote code execution          |
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+""")
 def check(**kwargs):
+    global CMD,VULN,TIMEOUT
+    CMD = verify.CMD
+    VULN = verify.VULN
+    TIMEOUT = verify.TIMEOUT
     ExpElasticsearch = Elasticsearch(_urlparse(kwargs['url']), CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(ExpElasticsearch, kwargs['pocname'])#返回对象函数属性值，可以直接调用

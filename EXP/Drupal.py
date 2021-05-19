@@ -168,6 +168,10 @@ print("""eg: https://123.207.23.211:11001
 | Drupal            | cve_2019_6340    |  Y  |  Y  | < 8.6.10, drupal core restful remote code execution         |
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+""")
 def check(**kwargs):
+    global CMD,VULN,TIMEOUT
+    CMD = verify.CMD
+    VULN = verify.VULN
+    TIMEOUT = verify.TIMEOUT
     ExpDrupal = Drupal(_urlparse(kwargs['url']), CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(ExpDrupal, kwargs['pocname'])#返回对象函数属性值，可以直接调用

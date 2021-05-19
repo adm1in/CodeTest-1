@@ -240,6 +240,10 @@ print("""eg: http://106.53.249.95:8983
 | Apache Solr       | cve_2019_17558   |  Y  |  Y  | 5.0.0 - 8.3.1, velocity response writer rce                 |
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+""")
 def check(**kwargs):
+    global CMD,VULN,TIMEOUT
+    CMD = verify.CMD
+    VULN = verify.VULN
+    TIMEOUT = verify.TIMEOUT
     ExpApacheSolr = ApacheSolr(_urlparse(kwargs['url']),CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(ExpApacheSolr, kwargs['pocname'])#返回对象函数属性值，可以直接调用

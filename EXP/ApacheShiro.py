@@ -668,6 +668,10 @@ print("""
 | Apache Shiro      | cve_2016_4437    |  Y  |  Y  | <= 1.2.4, shiro-550, rememberme deserialization rce         |
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+""")
 def check(**kwargs):
+    global CMD,VULN,TIMEOUT
+    CMD = verify.CMD
+    VULN = verify.VULN
+    TIMEOUT = verify.TIMEOUT
     ExpApacheShiro = ApacheShiro(kwargs['url'],CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(ExpApacheShiro, kwargs['pocname'])#返回对象函数属性值，可以直接调用

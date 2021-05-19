@@ -55,6 +55,10 @@ print("""eg: https://49.233.64.75:9443
 | Apache Unomi      | CVE-2020-13942   |  Y  |  Y  | < 1.5.2, apache unomi remote code execution                 |
 +-------------------+------------------+-----+-----+-------------------------------------------------------------+""")
 def check(**kwargs):
+    global CMD,VULN,TIMEOUT
+    CMD = verify.CMD
+    VULN = verify.VULN
+    TIMEOUT = verify.TIMEOUT
     ExpApacheUnomi = ApacheUnomi(_urlparse(kwargs['url']), CMD)
     if kwargs['pocname'] != 'ALL':
         func = getattr(ExpApacheUnomi, kwargs['pocname'])#返回对象函数属性值，可以直接调用
