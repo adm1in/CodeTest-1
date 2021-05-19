@@ -658,7 +658,7 @@ del input,print,set,Back''',running_space)#先把那些Python基础函数替换�
             color('[*]请输入目标URL和命令','pink')
             return
         start = time.time()
-        Verification.TIMEOUT = kwargs['timeout']
+        Verification.TIMEOUT = int(kwargs['timeout'])
         Verification.VULN = kwargs['vuln']
         Verification.CMD = kwargs['cmd'] if Verification.VULN == 'True' else 'echo VuLnEcHoPoCSuCCeSS'
         try:
@@ -2183,7 +2183,7 @@ def exeCMD(**kwargs):
     if kwargs['url'] == '' or kwargs['cmd'] == '':
         color('[*]请输入目标URL和命令','pink')
         return
-    Verification.TIMEOUT = kwargs['timeout']
+    Verification.TIMEOUT = int(kwargs['timeout'])
     Verification.VULN = kwargs['vuln']
     Verification.CMD = kwargs['cmd'] if Verification.VULN == 'True' else 'echo VuLnEcHoPoCSuCCeSS'
     start = time.time()
