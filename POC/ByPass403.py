@@ -1,4 +1,4 @@
-from CodeTest import color
+from ClassCongregation import color
 import requests
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -164,6 +164,7 @@ def check(**kwargs):
 
 if __name__ == "__main__":
     check(**{'url':'https://moa.cmbc.com.cn/moastatic/'})
+
 
 
 
