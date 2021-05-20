@@ -182,7 +182,7 @@ class MyGUI:
         self.ButtonC2 = Button(self.frmC, text='终 止', width = 10, command=lambda :self.stop_thread())
         self.ButtonC3 = Button(self.frmC, text='清空信息', width = 15, command=lambda :delText(gui.TexB))
         self.ButtonC4 = Button(self.frmC, text='重新载入当前POC', width = 15, command=ReLoad)
-        self.ButtonC5 = Button(self.frmC, text='当前环境变量', width = 15, command=ShowPython)
+        self.ButtonC5 = Button(self.frmC, text='当前进程运行状态', width = 15, command=ShowPython)
         #self.LabCA    = Label(self.frmC, text='当前运行状态')
         #self.TexCA    = Text(self.frmC, font=("consolas",10), width=2, height=1)
 
@@ -224,17 +224,19 @@ class MyGUI:
         self.ButtonF4.grid(row=0, column=3,padx=2, pady=2)
     
     def thread_it(self,func,**kwargs):
-        self.t = threading.Thread(target=func,kwargs=kwargs)
-        self.t.setDaemon(True)   # 守护--就算主界面关闭，线程也会留守后台运行（不对!）
+        self.t = threading.Thread(target=func,kwargs=kwargs,name='执行函数子线程',daemon=True)
         self.t.start()           # 启动
     
     def stop_thread(self):
         try:
             _async_raise(self.t.ident, SystemExit)
-            self.wait_running_job.stop()
+            #self.wait_running_job.stop()
             print("[*]已停止运行")
         except Exception as e:
             messagebox.showinfo('提示','没有正在运行的进程!')
+        finally:
+            gui.TexA2.delete('1.0','end')
+            gui.TexA2.configure(state="disabled")
 
     def BugTest(self,**kwargs):
         #kwargs = {url,port,file_list,pool}
@@ -312,15 +314,15 @@ class MyGUI:
         elif kwargs['url']:
             start = time.time()
             try:
-                self.wait_running_job = Job()#运行状态对象
-                self.wait_running_job.start()
-                color(Separator_(sc_name),'blue')
-                #print(Separator_(sc_name), 'blue')
+                self.t2 = threading.Thread(target=wait_running,name='运行状态子线程',daemon=True)
+                self.t2.start()
                 MyGUI.vuln.check(**kwargs)
             except Exception as e:
                 print('出现错误: %s'%type(e))
             finally:
-                self.wait_running_job.stop()
+                _async_raise(self.t2.ident, SystemExit)
+                gui.TexA2.delete('1.0','end')
+                gui.TexA2.configure(state="disabled")
             end = time.time()
             print('[*]共花费时间：{} 秒'.format(seconds2hms(end - start)))
     #没有输入测试目标
@@ -2083,14 +2085,15 @@ def bind_combobox_3(*args):
 
 #当前运行状态
 def wait_running():
+    MyGUI.wait_index = 0
     list = ["\\", "|", "/", "—"]
-    index = MyGUI.wait_index % 4
     gui.TexA2.configure(state="normal")
-    gui.TexA2.insert(INSERT,list[index])
-    time.sleep(0.25)
-    gui.TexA2.delete('1.0','end')
-    gui.TexA2.configure(state="disabled")
-    MyGUI.wait_index = MyGUI.wait_index + 1
+    while True:
+        index = MyGUI.wait_index % 4
+        gui.TexA2.insert(INSERT,list[index])
+        time.sleep(0.25)
+        gui.TexA2.delete('1.0','end')
+        MyGUI.wait_index = MyGUI.wait_index + 1
 
 #打开脚本目录
 def LoadCMD(folder_name):
@@ -2121,7 +2124,13 @@ def Separator_(str_):
 
 #显示python搜索环境路径
 def ShowPython():
-    print(str(sys.path))
+    try:
+        print('[*]'+gui.t.getName()+' 运行状态: '+ str(gui.t.isAlive()))
+        print('[*]'+gui.t2.getName()+' 运行状态: '+ str(gui.t2.isAlive()))
+    except AttributeError:
+        messagebox.showinfo(title='提示', message='进程还未启动')
+    except Exception as e:
+        messagebox.showinfo(title='错误', message=str(e))
 
 #重载脚本函数
 def ReLoad():
